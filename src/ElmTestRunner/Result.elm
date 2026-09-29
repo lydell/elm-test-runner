@@ -270,7 +270,7 @@ decodeDistributionReport =
 decodeDistributionReportHelp constructor =
     case constructor of
         "NoDistribution" ->
-            Decode.succeed NoDistribution
+            Decode.succeed (NoDistribution ())
 
         "DistributionToReport" ->
             Decode.map
@@ -373,7 +373,7 @@ decodeTestResultHelp constructor =
 encodeDistributionReport : DistributionReport -> Value
 encodeDistributionReport a =
     case a of
-        NoDistribution ->
+        NoDistribution () ->
             Encode.object
                 [ ( "Constructor", Encode.string "NoDistribution" )
                 ]

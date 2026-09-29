@@ -119,7 +119,7 @@ successLabelsToText =
 distributionReportToString : DistributionReport -> Maybe String
 distributionReportToString distributionReport =
     case distributionReport of
-        Test.Distribution.NoDistribution ->
+        Test.Distribution.NoDistribution () ->
             Nothing
 
         Test.Distribution.DistributionToReport r ->

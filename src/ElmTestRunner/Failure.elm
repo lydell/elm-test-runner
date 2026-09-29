@@ -50,6 +50,12 @@ encode =
 --         }
 --     | TODO
 --     | Invalid InvalidReason
+--     | Multiple
+--         (List
+--             { description : String
+--             , reason : Reason
+--             }
+--         )
 --
 -- type InvalidReason
 --     = EmptyList
@@ -59,6 +65,10 @@ encode =
 --     | DuplicatedName
 --     | DistributionInsufficient
 --     | DistributionBug
+
+
+type alias Record_description_String_reason_Reason_ =
+    { description : String, reason : Reason }
 
 
 type alias Record_expected_String_actual_String_extra_ListString_missing_ListString_ =
@@ -147,8 +157,20 @@ decodeReasonHelp constructor =
                 Invalid
                 (Decode.field "A1" decodeInvalidReason)
 
+        "Multiple" ->
+            Decode.map
+                Multiple
+                (Decode.field "A1" (Decode.list decodeRecord_description_String_reason_Reason_))
+
         other ->
             Decode.fail <| "Unknown constructor for type Reason: " ++ other
+
+
+decodeRecord_description_String_reason_Reason_ =
+    Decode.map2
+        Record_description_String_reason_Reason_
+        (Decode.field "description" Decode.string)
+        (Decode.field "reason" decodeReason)
 
 
 decodeRecord_expected_String_actual_String_extra_ListString_missing_ListString_ =
@@ -249,6 +271,19 @@ encodeReason a =
                 [ ( "Constructor", Encode.string "Invalid" )
                 , ( "A1", encodeInvalidReason a1 )
                 ]
+
+        Multiple a1 ->
+            Encode.object
+                [ ( "Constructor", Encode.string "Multiple" )
+                , ( "A1", Encode.list encodeRecord_description_String_reason_Reason_ a1 )
+                ]
+
+
+encodeRecord_description_String_reason_Reason_ a =
+    Encode.object
+        [ ( "description", Encode.string a.description )
+        , ( "reason", encodeReason a.reason )
+        ]
 
 
 encodeRecord_expected_String_actual_String_extra_ListString_missing_ListString_ a =

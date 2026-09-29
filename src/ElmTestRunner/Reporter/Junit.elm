@@ -158,7 +158,7 @@ classAndName labels =
 distributionReportToString : DistributionReport -> Maybe String
 distributionReportToString distributionReport =
     case distributionReport of
-        Test.Distribution.NoDistribution ->
+        Test.Distribution.NoDistribution () ->
             Nothing
 
         Test.Distribution.DistributionToReport r ->
@@ -271,3 +271,7 @@ reasonToString description reason =
                 ++ String.join "\n" extra
                 ++ "\n\nthese were missing:\n\n"
                 ++ String.join "\n" missing
+
+        Multiple _ ->
+            -- elm-test-runner does not support showing the `reason` for `Expect.oneOf`.
+            description
