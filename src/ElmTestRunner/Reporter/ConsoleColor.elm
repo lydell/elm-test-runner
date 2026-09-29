@@ -17,7 +17,6 @@ import ElmTestRunner.Vendor.ConsoleText as Text exposing (Text, UseColor, dark, 
 import ElmTestRunner.Vendor.FormatColor as FormatColor
 import ElmTestRunner.Vendor.FormatMonochrome as FormatMonochrome
 import Test.Distribution exposing (DistributionReport)
-import Test.Runner exposing (formatLabels)
 
 
 {-| Provide a console implementation of a reporter, mostly for human consumption.
@@ -114,6 +113,23 @@ failureLabelsToText =
 successLabelsToText : List String -> Text
 successLabelsToText =
     formatLabels (dark << plain << withChar '↓') (green << withChar '✓') >> Text.concat
+
+
+formatLabels :
+    (String -> Text)
+    -> (String -> Text)
+    -> List String
+    -> List Text
+formatLabels formatDescription formatTest labels =
+    case labels of
+        [] ->
+            []
+
+        test :: descriptions ->
+            List.foldl
+                (\x acc -> formatDescription x :: acc)
+                [ formatTest test ]
+                descriptions
 
 
 distributionReportToString : DistributionReport -> Maybe String

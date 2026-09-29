@@ -1,5 +1,5 @@
 module ElmTestRunner.Result exposing
-    ( TestResult(..), fromExpectations, setDuration, setLogs, encode, decoder
+    ( TestResult(..), setDuration, setLogs, encode, decoder
     , Summary, summary
     )
 
@@ -8,7 +8,7 @@ module ElmTestRunner.Result exposing
 
 # Manipulation of the result of a test run
 
-@docs TestResult, fromExpectations, setDuration, setLogs, encode, decoder
+@docs TestResult, setDuration, setLogs, encode, decoder
 
 
 # Helper functions
@@ -20,11 +20,9 @@ module ElmTestRunner.Result exposing
 import Array exposing (Array)
 import Dict exposing (Dict)
 import ElmTestRunner.Failure as Failure exposing (Failure)
-import Expect exposing (Expectation)
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Encode as Encode
 import Test.Distribution exposing (DistributionReport(..))
-import Test.Runner
 
 
 {-| Type summarizing the results of a test run.
@@ -92,77 +90,6 @@ setLogs logs testResult =
                 , todos = todos
                 , failures = failures
                 , distributionReports = distributionReports
-                }
-
-
-{-| Convert a list of expectations (results of a run) into a `TestResult`.
-Return the `Failed` variant if there is any todo or failure in the expectations.
--}
-fromExpectations : List String -> List Expectation -> TestResult
-fromExpectations labels expectations =
-    let
-        outcomes : Outcomes
-        outcomes =
-            getOutcomes expectations
-    in
-    if List.isEmpty outcomes.todos && List.isEmpty outcomes.failures then
-        Passed
-            { labels = labels
-            , duration = 0
-            , logs = []
-            , distributionReports = outcomes.distributionReports
-            }
-
-    else
-        Failed
-            { labels = labels
-            , duration = 0
-            , logs = []
-            , todos = outcomes.todos
-            , failures = outcomes.failures
-            , distributionReports = outcomes.distributionReports
-            }
-
-
-type alias Outcomes =
-    { todos : List String
-    , failures : List Failure
-    , distributionReports : List DistributionReport
-    }
-
-
-initOutcomes : Outcomes
-initOutcomes =
-    { todos = []
-    , failures = []
-    , distributionReports = []
-    }
-
-
-getOutcomes : List Expectation -> Outcomes
-getOutcomes expectations =
-    List.foldl accumOutcomes initOutcomes expectations
-
-
-accumOutcomes : Expectation -> Outcomes -> Outcomes
-accumOutcomes expectation outcomes =
-    let
-        distributionReport : DistributionReport
-        distributionReport =
-            Test.Runner.getDistributionReport expectation
-    in
-    case Test.Runner.getFailureReason expectation of
-        Nothing ->
-            { outcomes | distributionReports = distributionReport :: outcomes.distributionReports }
-
-        Just failure ->
-            if Test.Runner.isTodo expectation then
-                { outcomes | todos = failure.description :: outcomes.todos }
-
-            else
-                { outcomes
-                    | failures = failure :: outcomes.failures
-                    , distributionReports = distributionReport :: outcomes.distributionReports
                 }
 
 

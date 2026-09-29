@@ -11,7 +11,7 @@ import Json.Encode as Encode
 import Test.Runner.Failure exposing (InvalidReason(..), Reason(..))
 
 
-{-| Type resulting of calling `Test.Runner.getFailureReason` on a test `Expectation`.
+{-| Type resulting of calling the old `Test.Runner.getFailureReason` on a test `Expectation`.
 -}
 type alias Failure =
     { given : Maybe String
