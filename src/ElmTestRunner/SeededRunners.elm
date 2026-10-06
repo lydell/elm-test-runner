@@ -15,7 +15,7 @@ import Test.Runner.Failure exposing (Reason(..))
 import Test.RunnerV2 exposing (FuzzTest, Tests, UnitTest)
 
 
-{-| Tests with a random seed anf the number of fuzz runs.
+{-| Tests with a random seed and the number of fuzz runs.
 The type tells us if `Test.only` or `Test.skip` was used,
 and provides the tests in arrays for efficient indexed access.
 -}
