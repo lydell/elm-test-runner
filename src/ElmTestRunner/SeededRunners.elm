@@ -138,15 +138,15 @@ run : Int -> SeededRunners -> Maybe (Task Never TestResult)
 run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
     case Array.get id unitTests of
         Just unitTest ->
-            Test.RunnerV2.runUnitTestWithUnbufferedLogs unitTest
+            Test.RunnerV2.runUnitTest unitTest
                 |> Task.map
-                    (\( unitTestExpectation, _, _ ) ->
+                    (\( unitTestExpectation, duration, debugLogs ) ->
                         case unitTestExpectation of
                             Test.RunnerV2.UnitTestPass ->
                                 Passed
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
-                                    , duration = 0
-                                    , logs = []
+                                    , duration = duration
+                                    , logs = String.lines debugLogs
                                     , distributionReports = [ NoDistribution () ]
                                     }
 
@@ -170,8 +170,8 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                 in
                                 Failed
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
-                                    , duration = 0
-                                    , logs = []
+                                    , duration = duration
+                                    , logs = String.lines debugLogs
                                     , todos = todos
                                     , failures = failures
                                     , distributionReports = [ NoDistribution () ]
@@ -182,23 +182,23 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
         Nothing ->
             case Array.get (id - Array.length unitTests) fuzzTests of
                 Just fuzzTest ->
-                    Test.RunnerV2.runFuzzTestWithUnbufferedLogs fuzzTest seed fuzzRuns []
+                    Test.RunnerV2.runFuzzTest fuzzTest seed fuzzRuns []
                         |> Task.map
-                            (\( fuzzTestExpectation, _, _ ) ->
+                            (\( fuzzTestExpectation, duration, debugLogs ) ->
                                 case fuzzTestExpectation of
                                     Test.RunnerV2.FuzzTestPass fuzzTestPassData ->
                                         Passed
                                             { labels = Test.RunnerV2.getFuzzTestLabels fuzzTest
-                                            , duration = 0
-                                            , logs = []
+                                            , duration = duration
+                                            , logs = String.lines debugLogs
                                             , distributionReports = [ Test.RunnerV2.getFuzzTestPassDistributionReport fuzzTestPassData ]
                                             }
 
                                     Test.RunnerV2.FuzzTestFail fuzzTestFailData ->
                                         Failed
                                             { labels = Test.RunnerV2.getFuzzTestLabels fuzzTest
-                                            , duration = 0
-                                            , logs = []
+                                            , duration = duration
+                                            , logs = String.lines debugLogs
                                             , todos = []
                                             , failures =
                                                 [ { given = Test.RunnerV2.getFuzzTestFailGiven fuzzTestFailData
