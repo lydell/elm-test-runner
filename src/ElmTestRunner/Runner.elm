@@ -23,6 +23,7 @@ import Json.Encode exposing (Value)
 import Platform
 import Task
 import Test exposing (Test)
+import Test.RunnerV2
 
 
 
@@ -33,7 +34,7 @@ import Test exposing (Test)
 -}
 type alias Ports msg =
     { askTestsCount : (Value -> msg) -> Sub msg
-    , sendTestsCount : { kind : String, testsCount : Int } -> Cmd msg
+    , sendTestsCount : { kind : String, testsCount : Int, logs : List String } -> Cmd msg
     , receiveRunTest : (Int -> msg) -> Sub msg
     , sendResult : { id : Int, result : Value } -> Cmd msg
     }
@@ -64,6 +65,7 @@ type alias Model =
 -}
 type Msg
     = AskTestsCount
+    | GotDebugLogsBeforeFirstTestRun String
     | ReceiveRunTest Int
     | RanTest Int TestResult
 
@@ -143,9 +145,16 @@ update msg model =
     case msg of
         AskTestsCount ->
             ( model
+            , Test.RunnerV2.getDebugLogsBeforeFirstTestRun
+                |> Task.perform GotDebugLogsBeforeFirstTestRun
+            )
+
+        GotDebugLogsBeforeFirstTestRun debugLogs ->
+            ( model
             , model.ports.sendTestsCount
                 { kind = kindToString (SeededRunners.getKind model.testRunners)
                 , testsCount = SeededRunners.getTestsCount model.testRunners
+                , logs = String.lines debugLogs
                 }
             )
 
