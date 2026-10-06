@@ -139,8 +139,8 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
         Just unitTest ->
             Test.RunnerV2.runUnitTestWithUnbufferedLogs unitTest
                 |> Task.map
-                    (\( unitTextExpectation, _, _ ) ->
-                        case unitTextExpectation of
+                    (\( unitTestExpectation, _, _ ) ->
+                        case unitTestExpectation of
                             Test.RunnerV2.UnitTestPass ->
                                 Passed
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
@@ -183,8 +183,8 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                 Just fuzzTest ->
                     Test.RunnerV2.runFuzzTestWithUnbufferedLogs fuzzTest seed fuzzRuns []
                         |> Task.map
-                            (\( fuzzTextExpectation, _, _ ) ->
-                                case fuzzTextExpectation of
+                            (\( fuzzTestExpectation, _, _ ) ->
+                                case fuzzTestExpectation of
                                     Test.RunnerV2.FuzzTestPass fuzzTestPassData ->
                                         Passed
                                             { labels = Test.RunnerV2.getFuzzTestLabels fuzzTest
