@@ -11,6 +11,7 @@ import ElmTestRunner.Result exposing (TestResult(..))
 import Random
 import Task exposing (Task)
 import Test exposing (Test)
+import Test.Distribution exposing (DistributionReport(..))
 import Test.Runner.Failure exposing (Reason(..))
 import Test.RunnerV2 exposing (FuzzTest, Tests, UnitTest)
 
@@ -146,7 +147,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
                                     , duration = 0
                                     , logs = []
-                                    , distributionReports = []
+                                    , distributionReports = [ NoDistribution () ]
                                     }
 
                             Test.RunnerV2.UnitTestFail unitTestFailData ->
@@ -173,7 +174,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                     , logs = []
                                     , todos = todos
                                     , failures = failures
-                                    , distributionReports = []
+                                    , distributionReports = [ NoDistribution () ]
                                     }
                     )
                 |> Just
