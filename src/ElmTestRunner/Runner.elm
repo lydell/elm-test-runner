@@ -34,7 +34,7 @@ import Test.RunnerV2
 -}
 type alias Ports msg =
     { askTestsCount : (Value -> msg) -> Sub msg
-    , sendTestsCount : { kind : String, testsCount : Int, logs : List String } -> Cmd msg
+    , sendTestsCount : { kind : String, testsCount : Int, logs : String } -> Cmd msg
     , receiveRunTest : (Int -> msg) -> Sub msg
     , sendResult : { id : Int, result : Value } -> Cmd msg
     }
@@ -154,7 +154,7 @@ update msg model =
             , model.ports.sendTestsCount
                 { kind = kindToString (SeededRunners.getKind model.testRunners)
                 , testsCount = SeededRunners.getTestsCount model.testRunners
-                , logs = String.lines debugLogs
+                , logs = debugLogs
                 }
             )
 

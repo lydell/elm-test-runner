@@ -189,16 +189,16 @@ indent str =
         |> String.join "\n"
 
 
-logsToText : List String -> Text
+logsToText : String -> Text
 logsToText logs =
-    if List.isEmpty logs then
+    if String.isEmpty logs then
         Text.plain ""
 
     else
         Text.plain <|
             String.join "\n"
                 [ indent "with debug logs:\n"
-                , String.concat logs
+                , logs
                 , ""
                 ]
 

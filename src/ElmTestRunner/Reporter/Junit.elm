@@ -138,7 +138,7 @@ encodeTestResult result =
                 -- Data that was written to standard out while the test was executed.
                 -- Normally this is not an attribute inside "testcase" but a tag inside "testsuite" but here we bend the rules
                 -- to get the Debug.log outputs for this particular test.
-                , ( "system-out", Encode.string (String.join "\n" logs) )
+                , ( "system-out", Encode.string logs )
                 ]
     in
     Encode.object

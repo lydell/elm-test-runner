@@ -146,7 +146,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                 Passed
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
                                     , duration = duration
-                                    , logs = String.lines debugLogs
+                                    , logs = debugLogs
                                     , distributionReports = [ NoDistribution () ]
                                     }
 
@@ -171,7 +171,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                 Failed
                                     { labels = Test.RunnerV2.getUnitTestLabels unitTest
                                     , duration = duration
-                                    , logs = String.lines debugLogs
+                                    , logs = debugLogs
                                     , todos = todos
                                     , failures = failures
                                     , distributionReports = [ NoDistribution () ]
@@ -190,7 +190,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                         Passed
                                             { labels = Test.RunnerV2.getFuzzTestLabels fuzzTest
                                             , duration = duration
-                                            , logs = String.lines debugLogs
+                                            , logs = debugLogs
                                             , distributionReports = [ Test.RunnerV2.getFuzzTestPassDistributionReport fuzzTestPassData ]
                                             }
 
@@ -198,7 +198,7 @@ run id (SeededRunners seed fuzzRuns _ unitTests fuzzTests) =
                                         Failed
                                             { labels = Test.RunnerV2.getFuzzTestLabels fuzzTest
                                             , duration = duration
-                                            , logs = String.lines debugLogs
+                                            , logs = debugLogs
                                             , todos = []
                                             , failures =
                                                 [ { given = Test.RunnerV2.getFuzzTestFailGiven fuzzTestFailData
