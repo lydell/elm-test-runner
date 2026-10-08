@@ -90,7 +90,7 @@ of needed imports from user code and the list of tests to run.
     import Json.Encode exposing (Value)
 
     port askTestsCount : (Value -> msg) -> Sub msg
-    port sendTestsCount : { kind : String, testsCount : Int } -> Cmd msg
+    port sendTestsCount : { kind : String, testsCount : Int, logs : String } -> Cmd msg
     port receiveRunTest : (Int  -> msg) -> Sub msg
     port sendResult : { id : Int, result : Value } -> Cmd msg
 
